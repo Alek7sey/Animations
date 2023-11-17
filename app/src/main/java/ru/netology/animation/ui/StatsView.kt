@@ -12,7 +12,6 @@ import android.view.animation.LinearInterpolator
 import androidx.core.content.withStyledAttributes
 import ru.netology.animation.R
 import ru.netology.animation.util.AndroidUtils
-
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -32,6 +31,7 @@ class StatsView @JvmOverloads constructor(
 
     private var progress = 0F
     private var valueAnimator: ValueAnimator? = null
+    private var rotationAngle = 0F
 
     init {
         context.withStyledAttributes(attrs, R.styleable.StatsView) {
@@ -58,10 +58,11 @@ class StatsView @JvmOverloads constructor(
         set(value) {
             field = value
             update()
+
         }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        radius = min(w, h) / 2F - lineWidth / 2
+        radius = min(w, h) / 2F - lineWidth
         center = PointF(w / 2F, h / 2F)
         oval = RectF(
             center.x - radius, center.y - radius,
@@ -74,7 +75,7 @@ class StatsView @JvmOverloads constructor(
             return
         }
 
-        var startFrom = -90F
+        var startFrom = -90F + rotationAngle
         for ((index, datum) in data.withIndex()) {
             val angle = 360F * datum
             paint.color = colors.getOrNull(index) ?: randomColor()
@@ -87,7 +88,7 @@ class StatsView @JvmOverloads constructor(
             center.x,
             center.y + textPaint.textSize / 4,
             textPaint,
-        )
+            )
     }
 
     private fun update() {
@@ -100,9 +101,10 @@ class StatsView @JvmOverloads constructor(
         valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
             addUpdateListener { anim ->
                 progress = anim.animatedValue as Float
+                rotationAngle = 360F * progress
                 invalidate()
             }
-            duration = 500
+            duration = 2000
             interpolator = LinearInterpolator()
         }.also {
             it.start()
