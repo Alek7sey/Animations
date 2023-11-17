@@ -54,10 +54,16 @@ class StatsView @JvmOverloads constructor(
         textSize = fontSize
     }
 
-    var data: List<Float> = emptyList()
+    private var data: List<Float> = listOf(
+        0.25F,
+        0.25F,
+        0.25F,
+        0.25F,
+    )
         set(value) {
             field = value
-            update()
+           // update()
+            invalidate()
 
         }
 
@@ -75,11 +81,12 @@ class StatsView @JvmOverloads constructor(
             return
         }
 
-        var startFrom = -90F + rotationAngle
+        //var startFrom = -90F + rotationAngle
+        var startFrom = -90F
         for ((index, datum) in data.withIndex()) {
             val angle = 360F * datum
             paint.color = colors.getOrNull(index) ?: randomColor()
-            canvas.drawArc(oval, startFrom, angle * progress, false, paint)
+            canvas.drawArc(oval, startFrom, angle, false, paint)
             startFrom += angle
         }
 
@@ -88,28 +95,28 @@ class StatsView @JvmOverloads constructor(
             center.x,
             center.y + textPaint.textSize / 4,
             textPaint,
-            )
+        )
     }
 
-    private fun update() {
-        valueAnimator?.let {
-            it.removeAllListeners()
-            it.cancel()
-        }
-        progress = 0F
-
-        valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
-            addUpdateListener { anim ->
-                progress = anim.animatedValue as Float
-                rotationAngle = 360F * progress
-                invalidate()
-            }
-            duration = 2000
-            interpolator = LinearInterpolator()
-        }.also {
-            it.start()
-        }
-    }
+//    private fun update() {
+//        valueAnimator?.let {
+//            it.removeAllListeners()
+//            it.cancel()
+//        }
+//        progress = 0F
+//
+//        valueAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
+//            addUpdateListener { anim ->
+//                progress = anim.animatedValue as Float
+//                rotationAngle = 360F * progress
+//                invalidate()
+//            }
+//            duration = 2000
+//            interpolator = LinearInterpolator()
+//        }.also {
+//            it.start()
+//        }
+//    }
 
     private fun randomColor() = Random.nextInt(0xFF000000.toInt(), 0xFFFFFFFF.toInt())
 }
