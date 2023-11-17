@@ -5,11 +5,16 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.transition.ChangeBounds
+import android.transition.Scene
+import android.transition.TransitionManager
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
 import android.view.animation.LinearInterpolator
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -17,18 +22,17 @@ import ru.netology.animation.R
 import ru.netology.nmedia.ui.StatsView
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
-    private var animationSweepAngle: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val view = findViewById<StatsView>(R.id.stats)
-       // val text = findViewById<TextView>(R.id.label)
-        view.data = listOf(
-            0.25F,
-            0.25F,
-            0.25F,
-            0.25F,
-        )
+        //val view = findViewById<StatsView>(R.id.stats)
+        val root = findViewById<ViewGroup>(R.id.root)
+        // val text = findViewById<TextView>(R.id.label)
+        val scene = Scene.getSceneForLayout(root, R.layout.end_scene, this)
+        findViewById<Button>(R.id.goButton).setOnClickListener {
+            TransitionManager.go(scene, ChangeBounds().apply {
+                duration = 10000
+            })
+        }
 
 // Пример 1 android.view.animation
 //        val label = findViewById<TextView>(R.id.label)
